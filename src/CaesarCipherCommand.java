@@ -63,6 +63,6 @@ public class CaesarCipherCommand implements Runnable {
 
     public static void main(String[] args) {
         CommandLine cmd = new CommandLine(new CaesarCipherCommand());
-        cmd.execute(args);
+        cmd.execute("-b", "SampleFile.txt");
     }
 }

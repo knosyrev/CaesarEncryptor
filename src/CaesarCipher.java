@@ -56,7 +56,7 @@ public class CaesarCipher {
                 mostFrequentChar = entry.getKey();
             }
         }
-        int key = mostFrequentChar - 'е';
+        int key = mostFrequentChar - 'а';
         if (key < 0) {
             key += 33;
         }
