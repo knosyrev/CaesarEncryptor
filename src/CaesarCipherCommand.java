@@ -23,7 +23,7 @@ public class CaesarCipherCommand implements Runnable {
     @Option(names = {"-s", "--statistical-decryption"}, description = "Decrypts a file using statistical decryption")
     private boolean statisticalDecryption;
 
-    @Option(names = {"-k", "--cypher-key"}, description = "The key to use for encryption or decryption (1-36)")
+    @Option(names = {"-k", "--cypher-key"}, description = "The key to use for encryption or decryption (1-33)")
     private Integer key;
 
     @Parameters(index = "0", description = "The file to encrypt or decrypt")
