@@ -4,15 +4,13 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 
 @Command(name = "caesar-cipher", mixinStandardHelpOptions = true, version = "1.0", description = "Encrypts and decrypts a file using the Caesar cipher")
 public class CaesarCipherCommand implements Runnable {
+
     @Option(names = {"-e", "--encrypt"}, description = "Encrypts a file")
     private boolean encrypt;
 
@@ -25,35 +23,30 @@ public class CaesarCipherCommand implements Runnable {
     @Option(names = {"-s", "--statistical-decryption"}, description = "Decrypts a file using statistical decryption")
     private boolean statisticalDecryption;
 
+    @Option(names = {"-k", "--cypher-key"}, description = "The key to use for encryption or decryption (1-36)")
+    private Integer key;
+
     @Parameters(index = "0", description = "The file to encrypt or decrypt")
     private Path file;
 
-    @Parameters(index = "1", description = "The key to use for encryption or decryption (1-36)")
-    private Integer key;
-
     @Override
     public void run() {
-        Charset charset = StandardCharsets.UTF_8;
+
         try {
-            String text = new String(Files.readAllBytes(file), charset);
-            CaesarCipher caesarCipher = new CaesarCipher(key);
+            String text = Files.readString(file, StandardCharsets.UTF_8);          // read source file
+
             if (encrypt) {
-                String encryptedText = caesarCipher.encrypt(text, key);
-                Files.write(file, encryptedText.getBytes());
+                CaesarCipher caesarCipher = new CaesarCipher(key);                 //initialize key
+                String encryptedText = caesarCipher.encrypt(text, key);            // encrypt text
+                Files.write(file, encryptedText.getBytes());                       // save encrypted text
             } else if (decrypt) {
-                String decryptedText = caesarCipher.decrypt(text);
-                Files.write(file, decryptedText.getBytes());
+                CaesarCipher caesarCipher = new CaesarCipher(key);                 //initialize key
+                String decryptedText = caesarCipher.decrypt(text);                 // decrypt text
+                Files.write(file, decryptedText.getBytes());                       // save decrypted text
             } else if (bruteForce) {
-                caesarCipher.bruteForce(text);
+                CaesarCipher.bruteForce(text);                                     //start bruteforce algorithm
             } else if (statisticalDecryption) {
-                Map<Character, Integer> frequency = caesarCipher.getCharFrequency(text);
-                int key = caesarCipher.getMostFrequentCharKey(frequency);
-                System.out.println("Key: " + key);
-
-                CaesarCipher decryptionCipher = new CaesarCipher(key);
-                String decryptedText = decryptionCipher.decrypt(text);
-                System.out.println("Decrypted text: " + decryptedText);
-
+                String decryptedText = CaesarCipher.statisticalDecryption(text);   //start statistical decryption algorithm
                 Files.write(file, decryptedText.getBytes());
             }
         } catch (IOException e) {
@@ -63,6 +56,7 @@ public class CaesarCipherCommand implements Runnable {
 
     public static void main(String[] args) {
         CommandLine cmd = new CommandLine(new CaesarCipherCommand());
-        cmd.execute("-b", "SampleFile.txt");
+        cmd.execute( "-s", "SampleFile.txt");
     }
+
 }
