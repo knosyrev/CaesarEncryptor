@@ -56,7 +56,8 @@ public class CaesarCipherCommand implements Runnable {
 
     public static void main(String[] args) {
         CommandLine cmd = new CommandLine(new CaesarCipherCommand());
-        cmd.execute( "-s", "SampleFile.txt");
+        //cmd.execute( "-d", "-k=5", "res/SampleFile.txt");    //this code is used for execution in IDE
+        cmd.execute(args);                                     //this code is used for execution in Terminal
     }
 
 }
