@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CaesarCipher {
+
     private int key;
 
     public CaesarCipher(int key) {
@@ -81,4 +82,5 @@ public class CaesarCipher {
             System.out.println("Key: " + key + ", Text: " + result);
         }
     }
+
 }
