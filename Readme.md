@@ -1,8 +1,8 @@
-Usage: caesar-cipher [-bdehsV] [-k=\<key>] sourceFile outputFile\
+Usage: caesar-cipher [-bdehsV] [-k=\<key>] &lt;sourceFile> &lt;outputFile>\
 Encrypts and decrypts a file using the Caesar cipher
 file               
-sourceFile         The file to encrypt or decrypt\
-outputFile         The file to encrypt or decrypt\
+&lt;sourceFile>         The file to encrypt or decrypt\
+&lt;outputFile>         The file to encrypt or decrypt\
 -b, --brute-force        Brute forces the key for a given file\
 -d, --decrypt            Decrypts a file\
 -e, --encrypt            Encrypts a file\
