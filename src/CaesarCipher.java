@@ -4,11 +4,17 @@ import java.util.Map;
 
 public class CaesarCipher {
 
-    private int key;
-    private static final int LETTER_AMOUNT = 33; //amount of letters in russian alphabet
+    private final int KEY;
+    private static final char[] ALPHABET_RU = {
+            'а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к',
+            'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х',
+            'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'
+    };
+    private static final char MOST_FREQUENT_CHAR_RU = 'о';       //'о' is the most frequent letter in Russian alphabet
+    private static final int LETTER_AMOUNT = ALPHABET_RU.length; //amount of letters in russian alphabet
 
     public CaesarCipher(int key) {
-        this.key = key;
+        this.KEY = key;
     }
 
     public String encrypt(String text, int key) {
@@ -17,25 +23,28 @@ public class CaesarCipher {
     }
 
     public String decrypt(String text) {
-        return encrypt(text, LETTER_AMOUNT - key);
+        return encrypt(text, LETTER_AMOUNT - KEY);
     }
 
     public static StringBuilder processText(String initialText, int key) {
-        StringBuilder processedText = new StringBuilder();                                  //initialize stringbuilder
+        StringBuilder processedText = new StringBuilder();                                  //initialize string builder
 
         for (char initialLetter : initialText.toCharArray()) {
             if (Character.isLetter(initialLetter)) {
-                if (Character.isUpperCase(initialLetter)) {
-                    processedText.append((char) ('А' + (initialLetter - 'А' + key) % LETTER_AMOUNT));  //add uppercase letter to the processed text
-                } else {
-                    processedText.append((char) ('а' + (initialLetter - 'а' + key) % LETTER_AMOUNT));  //add lowercase letter to the processed text
-                }
+                processedText.append(
+                        Character.isUpperCase(initialLetter) ?
+                        Character.toUpperCase(processLetter(initialLetter, key)) :          //add uppercase letter to the processed text
+                        processLetter(initialLetter, key));                                 //add lowercase letter to the processed text
             } else {
                 processedText.append(initialLetter);                                        //add other symbol
             }
         }
 
         return processedText;
+    }
+
+    public static char processLetter(Character initialLetter, int key) {
+       return (char) (ALPHABET_RU[0] + (initialLetter - ALPHABET_RU[0] + key) % LETTER_AMOUNT);
     }
 
     public static String statisticalDecryption(String text) throws IOException {
@@ -52,12 +61,12 @@ public class CaesarCipher {
 
     public static Map<Character, Integer> getCharFrequency(String text) {
         Map<Character, Integer> letterFrequency = new HashMap<>();
-        for (char c : text.toCharArray()) {                             //count letter frequency of every char
-            if (Character.isLetter(c)) {                                //skip symbols other than letters
-                if (!letterFrequency.containsKey(c)) {                  //first time met letter
-                    letterFrequency.put(c, 1);
+        for (char character : text.toCharArray()) {                             //count letter frequency of every char
+            if (Character.isLetter(character)) {                                //skip symbols other than letters
+                if (!letterFrequency.containsKey(character)) {                  //first time met letter
+                    letterFrequency.put(character, 1);
                 } else {
-                    letterFrequency.put(c, letterFrequency.get(c) + 1); //actual amount of letters
+                    letterFrequency.put(character, letterFrequency.get(character) + 1); //amount of letters counter iterator
                 }
             }
         }
@@ -76,18 +85,21 @@ public class CaesarCipher {
             }
         }
 
-        int key = mostFrequentChar - 'о';                                   //'о' is the most frequent letter in Russian alphabet
+        int key = mostFrequentChar - MOST_FREQUENT_CHAR_RU;                 //'о' is the most frequent letter in Russian alphabet
         if (key < 0) {                                                      //just in case we got capital letter most frequent
             key += LETTER_AMOUNT;
         }
         return key;
     }
 
-    public static void bruteForce(String text) {
-        for (int key = 1; key < LETTER_AMOUNT; key++) {
-            StringBuilder result = processText(text, key);
-            System.out.println("Key: " + key + ", Text: " + result);
+    public static String bruteForce(String text) {
+        StringBuilder decryptedText = new StringBuilder();
+        for (int key = 1; key < LETTER_AMOUNT; key++) {                     //iterate over key value
+            StringBuilder result = processText(text, key);                  //process text
+            System.out.println("Key: " + key + ", Text: " + result);        //print result to console
+            decryptedText.append("Key: ").append(key).append(",\nText: ").append(result).append('\n');
         }
+        return decryptedText.toString();
     }
 
 }
