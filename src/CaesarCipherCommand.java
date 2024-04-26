@@ -48,10 +48,10 @@ public class CaesarCipherCommand implements Runnable {
                 String decryptedText = caesarCipher.decrypt(text);                 // decrypt text
                 Files.write(outputFile, decryptedText.getBytes());                 // save decrypted text
             } else if (bruteForce) {
-                String decryptedText = CaesarCipher.bruteForce(text);              //start bruteforce algorithm
+                String decryptedText = TextProcessor.bruteForce(text);              //start bruteforce algorithm
                 Files.write(outputFile, decryptedText.getBytes());                 // save output
             } else if (statisticalDecryption) {
-                String decryptedText = CaesarCipher.statisticalDecryption(text);   //start statistical decryption algorithm
+                String decryptedText = TextProcessor.statisticalDecryption(text);   //start statistical decryption algorithm
                 Files.write(outputFile, decryptedText.getBytes());
             }
         } catch (IOException e) {
